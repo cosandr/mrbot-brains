@@ -59,8 +59,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--listen-address', type=str, default='0.0.0.0:7762',
                         help='Listen address, absolute path indicates unix socket')
+    parser.add_argument('--delete-sock', action='store_true', help='Delete existing socket file')
     args = parser.parse_args()
     if args.listen_address.startswith('/'):
+        if os.path.exists(args.listen_address):
+            if parser.delete_sock:
+                os.unlink(args.listen_address)
+                logger.info(f'Deleted socket file {args.listen_address}')
+            else:
+                logger.error(f'Socket file {args.listen_address} exists, cannot start.')
+                os.exit(0)
         web.run_app(app, path=args.listen_address)
     else:
         host, port = args.listen_address.split(':', 1)
