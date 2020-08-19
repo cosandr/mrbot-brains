@@ -63,12 +63,12 @@ def main():
     args = parser.parse_args()
     if args.listen_address.startswith('/'):
         if os.path.exists(args.listen_address):
-            if parser.delete_sock:
+            if args.delete_sock:
                 os.unlink(args.listen_address)
                 logger.info(f'Deleted socket file {args.listen_address}')
             else:
                 logger.error(f'Socket file {args.listen_address} exists, cannot start.')
-                os.exit(0)
+                exit(0)
         web.run_app(app, path=args.listen_address)
     else:
         host, port = args.listen_address.split(':', 1)
