@@ -15,7 +15,7 @@ from textgenrnn.model import textgenrnn_model
 import config as cfg
 from ext.response import Response
 
-DATA_PATH = os.path.join(cfg.DATA_PATH, "Keras")
+DATA_PATH = os.path.join(cfg.DATA_PATH, "textgenrnn")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 loop = asyncio.get_event_loop()

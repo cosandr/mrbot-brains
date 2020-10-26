@@ -9,7 +9,7 @@ scipy
 jellyfish
 regex
 matplotlib
-git+https://github.com/AndreyATGB/Keras-RNN.git
+git+https://github.com/cosandr/textgenrnn.git@tf1.x
 opencv-python-headless # Will NOT work, H264 support is expected
 tensorflow < 1.15 # 1.15 does not work (it does?), need 1.14 or lower
 tensorflow_hub

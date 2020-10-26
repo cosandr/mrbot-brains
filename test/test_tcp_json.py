@@ -5,7 +5,7 @@ model = 'jens_2l128bi'
 words = 30
 temp = 0.5
 
-modelpath = F"/mnt/data/Keras/{model}"
+modelpath = F"/mnt/data/textgenrnn/{model}"
 weights = F"{modelpath}/{model}_weights.hdf5"
 vocab = F"{modelpath}/{model}_vocab.json"
 config = F"{modelpath}/{model}_config.json"
