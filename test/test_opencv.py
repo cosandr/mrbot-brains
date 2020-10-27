@@ -12,7 +12,7 @@ def test_opencv_avc1():
         os.unlink(filename)
     width = height = 256
     # Define the codec and create VideoWriter object
-    fourcc = cv2.VideoWriter_fourcc(*'vp09')
+    fourcc = cv2.VideoWriter_fourcc(*'avc1')
     out = cv2.VideoWriter(filename, fourcc, 20.0, (width, height))
     assert os.path.exists(filename), 'No video file created'
     for frame in sorted(os.listdir("frames")):

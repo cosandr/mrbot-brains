@@ -4,13 +4,10 @@ import json
 import logging
 import os
 import time
-from typing import Tuple, Set, Dict, List
+from typing import Tuple, Set
 
-import numpy as np
-import tensorflow as tf
 from aiohttp import web
-from keras import backend as K
-from textgenrnn.model import textgenrnn_model
+from textgenrnn.run_utils import rnn_guess, rnn_generate, get_paths
 
 import config as cfg
 from ext.response import Response
@@ -30,7 +27,8 @@ async def handler_be_list_best(r: web.Request) -> web.Response:
     for model in find_all_models():
         best_models.append(find_lowest_loss(model))
     for m in sorted(best_models):
-        with open(get_config_path(m), 'r') as infile:
+        paths = get_paths(model_name=m, models_dir=DATA_PATH)
+        with open(paths['config_path'], 'r') as infile:
             model_data.append(json.load(infile))
     resp.data = model_data
     return resp.web_response
@@ -41,7 +39,8 @@ async def handler_be_list_all(r: web.Request) -> web.Response:
     resp = Response()
     model_data = []
     for m in sorted(os.listdir(DATA_PATH)):
-        with open(get_config_path(m), 'r') as infile:
+        paths = get_paths(model_name=m, models_dir=DATA_PATH)
+        with open(paths['config_path'], 'r') as infile:
             model_data.append(json.load(infile))
     resp.data = model_data
     return resp.web_response
@@ -107,7 +106,7 @@ async def handler_guess_run(r: web.Request) -> web.Response:
     resp.params = params
     try:
         start = time.perf_counter()
-        resp.data = await loop.run_in_executor(None, lambda: run_guess(**params))
+        resp.data = await loop.run_in_executor(None, lambda: rnn_guess(models_dir=DATA_PATH, reset=True, **params))
         resp.time = time.perf_counter() - start
     except Exception as e:
         logger.exception('guess run error')
@@ -117,96 +116,10 @@ async def handler_guess_run(r: web.Request) -> web.Response:
 
 
 def run_be(model: str, words: int = 50, temp: float = 0.5) -> Tuple[str, int]:
-    # Load configs
-    with open(get_config_path(model), 'r', encoding='utf8', errors='ignore') as json_file:
-        config = json.load(json_file)
-    with open(get_vocab_path(model), 'r', encoding='utf8', errors='ignore') as json_file:
-        vocab = json.load(json_file)
-    # Prepare vars
-    num_classes = len(vocab) + 1
-    indices_char = {v: k for k, v in vocab.items()}
-    # Build model
-    model = textgenrnn_model(num_classes, cfg=config, weights_path=get_weights_path(model))
-    # Config vars
-    maxlen = config['max_length']
-    # Start with random letter
-    # ret_str = np.random.choice(list('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'))
-    ret_str = '\n'
-    if len(model.inputs) > 1:
-        model = tf.keras.models.Model(inputs=model.inputs[0], outputs=model.outputs[1])
-
-    num_words = 0
-    num_char = 0
-    while num_char < (words+50)*6:
-        encoded = np.array([vocab.get(x, 0) for x in ret_str])
-        encoded_text = tf.keras.preprocessing.sequence.pad_sequences([encoded], maxlen=maxlen)
-
-        preds = np.asarray(model.predict(encoded_text, batch_size=1)[0]).astype('float64')
-        if temp is None or temp == 0.0:
-            index = np.argmax(preds)
-        else:
-            preds = np.log(preds + tf.keras.backend.epsilon()) / temp
-            exp_preds = np.exp(preds)
-            preds = exp_preds / np.sum(exp_preds)
-            probas = np.random.multinomial(1, preds, 1)
-            index = np.argmax(probas)
-            # prevent function from being able to choose 0 (placeholder)
-            # choose 2nd best index from preds
-            if index == 0:
-                index = np.argsort(preds)[-2]
-
-        next_char = indices_char[index]
-        ret_str += next_char
-        num_char += 1
-        if next_char == ' ':
-            num_words += 1
-        # Only stop after new line
-        if (num_words >= words) and (next_char == '\n'):
-            break
-
-    K.clear_session()
-    tf.reset_default_graph()
-    return ret_str, num_words
-
-
-def run_guess(check_models: List[str], in_str: str) -> Dict[str, float]:
-    ret_dict: Dict[str, float] = {}
-    for name in check_models:
-        # Load configs
-        with open(get_config_path(name), 'r', encoding='utf8', errors='ignore') as json_file:
-            config = json.load(json_file)
-        with open(get_vocab_path(name), 'r', encoding='utf8', errors='ignore') as json_file:
-            vocab = json.load(json_file)
-        # Prepare vars
-        num_classes = len(vocab) + 1
-        # Build model
-        model = textgenrnn_model(num_classes, cfg=config, weights_path=get_weights_path(name))
-        # Config vars
-        maxlen = config['max_length']
-        if len(model.inputs) > 1:
-            model = tf.keras.models.Model(inputs=model.inputs[0], outputs=model.outputs[1])
-
-        encoded = np.array([vocab.get(x, 0) for x in in_str[:-1]])
-        encoded_text = tf.keras.preprocessing.sequence.pad_sequences([encoded], maxlen=maxlen)
-        preds = np.asarray(model.predict(encoded_text, batch_size=1)[0]).astype('float64')
-        pred_next = preds[vocab.get(in_str[-1], 0)]
-        ret_dict[name] = pred_next * 100
-
-    K.clear_session()
-    tf.reset_default_graph()
-    return ret_dict
-
-
-def get_weights_path(model: str) -> str:
-    return os.path.join(DATA_PATH, model, f'{model}_weights.hdf5')
-
-
-def get_vocab_path(model: str) -> str:
-    return os.path.join(DATA_PATH, model, f'{model}_vocab.json')
-
-
-def get_config_path(model: str) -> str:
-    return os.path.join(DATA_PATH, model, f'{model}_config.json')
+    paths = get_paths(model_name=model, models_dir=DATA_PATH)
+    paths.pop('model_dir')
+    text, words = rnn_generate(**paths, min_words=words, temperature=temp, reset=True)
+    return text, words
 
 
 def find_model(model: str) -> str:
