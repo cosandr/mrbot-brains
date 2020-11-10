@@ -8,7 +8,21 @@ import os
 
 from aiohttp import web
 
-from ext import utils
+from ext import utils, Response
+
+
+async def error_middleware(app, handler):
+    async def middleware_handler(request):
+        try:
+            response = await handler(request)
+            if response.status == 404:
+                return Response(error=response.message).web_response
+            return response
+        except web.HTTPException as ex:
+            if ex.status == 404:
+                return Response(error=f'{ex.status}: {ex.reason}').web_response
+            raise
+    return middleware_handler
 
 
 def main():
@@ -29,7 +43,7 @@ def main():
     logger = logging.getLogger('launcher')
     logger.setLevel(logging.DEBUG)
 
-    app = web.Application()
+    app = web.Application(middlewares=[error_middleware])
     app.on_startup.append(utils.init_sess)
     app.on_shutdown.append(utils.close_sess)
 
