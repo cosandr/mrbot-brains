@@ -1,16 +1,17 @@
+numpy==1.18.5
+h5py<3.0
+git+https://github.com/cosandr/textgenrnn.git@tf1.x
 discord.py
 asyncpg
-aiohttp < 3.7.0
+aiohttp
 noise
 pillow
 imageio
-numpy
 scipy
 jellyfish
 regex
 matplotlib
-git+https://github.com/cosandr/textgenrnn.git@tf1.x
 opencv-python-headless # Will NOT work, H264 support is expected
-tensorflow < 1.15 # 1.15 does not work (it does?), need 1.14 or lower
+tensorflow==1.15.4 # 1.15 does not work (it does?), need 1.14 or lower
 tensorflow_hub
-keras < 2.4 # 2.4 requires TF 2.2
+keras<2.4 # 2.4 requires TF 2.2
