@@ -13,8 +13,7 @@ from aiohttp import web
 from noise import snoise2, snoise3
 
 import config as cfg
-from ext.parser import Parser
-from ext.response import Response
+from ext import ArgumentParser, Response
 from ext.utils import check_opencv_codec
 
 logger = logging.getLogger(__name__)
@@ -26,7 +25,7 @@ NUM_PROCESSES = mp.cpu_count()
 async def handler_run_image(r: web.Request) -> web.Response:
     logger.debug(r.path)
     resp = Response()
-    parser = Parser()
+    parser = ArgumentParser()
     parser.add_argument('--w', type=int, default=640),
     parser.add_argument('--h', type=int, default=480),
     parser.add_argument('--octaves', type=int, default=10),
@@ -78,14 +77,14 @@ async def handler_run_image(r: web.Request) -> web.Response:
 async def handler_run_gif(r: web.Request) -> web.Response:
     logger.debug(r.path)
     resp = Response()
-    parser = Parser()
+    parser = ArgumentParser()
     parser.add_argument('--w', type=int, default=100),
     parser.add_argument('--h', type=int, default=100),
     parser.add_argument('--octaves', type=int, default=5),
     parser.add_argument('--scale', type=float, default=1/20),
     parser.add_argument('--timescale', type=int, default=10),
     parser.add_argument('--persistence', type=float, default=0.3),
-    parser.add_argument('--lacunarity',type=float, default=2.0),
+    parser.add_argument('--lacunarity', type=float, default=2.0),
     parser.add_argument('--video', default=False),
     parser.add_argument('--fps', type=int, default=24),
     parser.add_argument('--frames', type=int, default=10)

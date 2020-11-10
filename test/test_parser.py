@@ -1,4 +1,4 @@
-from ext.parser import Parser
+from ext import ArgumentParser
 
 
 def test_parser():
@@ -8,7 +8,7 @@ def test_parser():
             output='s',
         )
     ]
-    parser = Parser()
+    parser = ArgumentParser()
     parser.add_argument('--seed', default=None, type=int)
     data = dict(seed='23')
     args = parser.parse_kwargs(data)

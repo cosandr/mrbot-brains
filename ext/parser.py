@@ -1,11 +1,17 @@
-from argparse import ArgumentParser, Namespace
+import argparse
 
 
-class Parser(ArgumentParser):
+class ArgumentParser(argparse.ArgumentParser):
+    def _print_message(self, message, file=None):
+        raise Exception(message)
+
+    def exit(self, *args, **kwargs):
+        return
+
     def error(self, message):
         raise Exception(str(message).replace('--', ''))
 
-    def parse_kwargs(self, kwargs: dict) -> Namespace:
+    def parse_kwargs(self, kwargs: dict) -> argparse.Namespace:
         # Flatten dict to list
         args = []
         for k, v in kwargs.items():

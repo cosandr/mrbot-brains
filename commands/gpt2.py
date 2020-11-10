@@ -9,9 +9,8 @@ import tensorflow as tf
 from aiohttp import web
 
 import config as cfg
+from ext import ArgumentParser, Response
 from ext.gpt2 import encoder, model, sample
-from ext.parser import Parser
-from ext.response import Response
 
 DATA_PATH = os.path.join(cfg.DATA_PATH, "gpt-2", "models")
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
@@ -34,7 +33,7 @@ async def handler_list(r: web.Request) -> web.Response:
 async def handler_run(r: web.Request) -> web.Response:
     logger.debug(r.path)
     resp = Response()
-    parser = Parser()
+    parser = ArgumentParser()
     parser.add_argument("--raw_text", default=None, type=str, required=True)
     parser.add_argument("--model_name", default="117M", type=str)
     parser.add_argument("--seed", default=None, type=int)

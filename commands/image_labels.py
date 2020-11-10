@@ -11,8 +11,7 @@ import tensorflow as tf
 from aiohttp import web
 
 import config as cfg
-from ext.parser import Parser
-from ext.response import Response
+from ext import ArgumentParser, Response
 from ext.utils import bytes_from_url
 
 DATA_PATH = os.path.join(cfg.DATA_PATH, "IMG")
@@ -44,7 +43,7 @@ async def handler_list(r: web.Request) -> web.Response:
 async def handler_run(r: web.Request) -> web.Response:
     logger.debug(r.path)
     resp = Response()
-    parser = Parser()
+    parser = ArgumentParser()
     parser.add_argument("--model_type", default=None, type=str, required=True)
     parser.add_argument("--url", default=None, type=str)
     parser.add_argument("--image", default=None, type=str)

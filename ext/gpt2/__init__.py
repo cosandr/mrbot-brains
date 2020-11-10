@@ -1,1 +1,1 @@
-__all__ = ['encoder', 'generate', 'model', 'sample']
+__all__ = ['encoder', 'model', 'sample']

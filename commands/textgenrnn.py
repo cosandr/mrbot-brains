@@ -10,7 +10,7 @@ from aiohttp import web
 from textgenrnn.run_utils import rnn_guess, rnn_generate, get_paths
 
 import config as cfg
-from ext.response import Response
+from ext import Response
 
 DATA_PATH = os.path.join(cfg.DATA_PATH, "textgenrnn")
 logger = logging.getLogger(__name__)

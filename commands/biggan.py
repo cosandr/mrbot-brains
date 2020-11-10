@@ -9,9 +9,7 @@ from typing import Dict
 from aiohttp import web
 
 import config as cfg
-from ext.biggan import BigGAN
-from ext.parser import Parser
-from ext.response import Response
+from ext import ArgumentParser, BigGAN, Response
 from ext.utils import check_opencv_codec
 
 DATA_PATH = os.path.join(cfg.DATA_PATH, "biggan")
@@ -52,7 +50,7 @@ async def handler_run(r: web.Request) -> web.Response:
     cat_a_name = ''
     cat_b_name = ''
     resp = Response()
-    parser = Parser()
+    parser = ArgumentParser()
     parser.add_argument("--cat_a", default=None, type=int, required=True)
     parser.add_argument("--cat_b", default=None, type=int)
     parser.add_argument("--video", default=False, type=bool)

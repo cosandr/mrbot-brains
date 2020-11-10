@@ -1,6 +1,6 @@
 from typing import NamedTuple
 
-from ext.response import Response
+from ext import Response
 
 
 class ExpectedJSON(NamedTuple):
