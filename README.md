@@ -5,7 +5,7 @@ A REST API for use with my Discord bot. Its purpose is to run CPU intensive task
 For browser-playable videos OpenCV must be able to use the avc1 codec,
 the PyPi package does not work! Some distributions include non-free codecs when
 building OpenCV (ArchLinux for example) but otherwise you will have to build it yourself.
-See my [Dockerfile](https://github.com/cosandr/containers/blob/master/containers/opencv/deb.Dockerfile)
+See my [Dockerfile](https://github.com/cosandr/containers/blob/master/opencv/deb.Dockerfile)
 for an example.
 
 ## Environment variables
@@ -17,4 +17,4 @@ for an example.
 
 ## Docker
 
-See the [Dockerfile](https://github.com/cosandr/containers/blob/master/containers/mrbot/brains.Dockerfile).
+See the [Dockerfile](https://github.com/cosandr/containers/blob/master/mrbot/brains.Dockerfile).
