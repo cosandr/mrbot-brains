@@ -1,0 +1,8 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+cd /app || exit
+
+exec s6-setuidgid abc python launcher.py \
+    --listen-address "$LISTEN_ADDRESS" \
+    --delete-sock

@@ -1,0 +1,6 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+if [[ -S $LISTEN_ADDRESS ]]; then
+    rm -fv "$LISTEN_ADDRESS"
+fi

@@ -14,7 +14,3 @@ for an example.
 * `UPLOAD_PATH` is where images/videos are placed, should be on a web server
 * `UPLOAD_URL` corresponding URL of UPLOAD_PATH
 * `MP4_FALLBACK` change fallback mp4 codec if avc1 is not available, default mp4v
-
-## Docker
-
-See the [Dockerfile](https://github.com/cosandr/containers/blob/master/mrbot/brains.Dockerfile).
