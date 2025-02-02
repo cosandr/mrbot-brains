@@ -15,7 +15,6 @@ from ext import Response
 DATA_PATH = os.path.join(cfg.DATA_PATH, "textgenrnn")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-loop = asyncio.get_event_loop()
 
 
 async def handler_be_list_best(r: web.Request) -> web.Response:
@@ -67,6 +66,7 @@ async def handler_be_run(r: web.Request) -> web.Response:
     params["model"] = model
     try:
         start = time.perf_counter()
+        loop = asyncio.get_running_loop()
         ret_str, num_words = await loop.run_in_executor(None, lambda: run_be(**params))
         resp.time = time.perf_counter() - start
         resp.data = dict(text=ret_str, words=num_words)
@@ -106,6 +106,7 @@ async def handler_guess_run(r: web.Request) -> web.Response:
     resp.params = params
     try:
         start = time.perf_counter()
+        loop = asyncio.get_running_loop()
         resp.data = await loop.run_in_executor(None, lambda: rnn_guess(models_dir=DATA_PATH, reset=True, **params))
         resp.time = time.perf_counter() - start
     except Exception as e:

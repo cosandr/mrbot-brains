@@ -1,19 +1,19 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="launcher" type="PythonConfigurationType" factoryName="Python">
-    <module name="mrbot-brains" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
-      <env name="DATA_PATH" value="/dresrv/srv/containers/discord/data" />
+      <env name="DATA_PATH" value="/mnt/containers/mrbot/data/bot" />
       <env name="UPLOAD_PATH" value="test/upload" />
       <env name="UPLOAD_URL" value="https://www.example.com" />
     </envs>
-    <option name="SDK_HOME" value="" />
+    <option name="SDK_HOME" value="$USER_HOME$/.pyenv/versions/mrbot-brains/bin/python" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-    <option name="IS_MODULE_SDK" value="true" />
+    <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
+    <module name="" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/launcher.py" />
     <option name="PARAMETERS" value="" />

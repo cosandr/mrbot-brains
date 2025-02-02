@@ -16,7 +16,6 @@ DATA_PATH = os.path.join(cfg.DATA_PATH, "gpt-2", "models")
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-loop = asyncio.get_event_loop()
 
 
 async def handler_list(r: web.Request) -> web.Response:
@@ -61,6 +60,7 @@ async def handler_run(r: web.Request) -> web.Response:
     resp.params = params
     try:
         start = time.perf_counter()
+        loop = asyncio.get_running_loop()
         ret_str = await loop.run_in_executor(None, lambda: run(**params))
         resp.time = time.perf_counter() - start
         resp.data = ret_str

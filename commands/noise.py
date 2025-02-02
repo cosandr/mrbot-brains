@@ -10,15 +10,14 @@ import imageio
 import numpy as np
 from PIL import Image
 from aiohttp import web
-from noise import snoise2, snoise3
 
 import config as cfg
 from ext import ArgumentParser, Response
 from ext.utils import check_opencv_codec
+from noise import snoise2, snoise3
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-loop = asyncio.get_event_loop()
 NUM_PROCESSES = mp.cpu_count()
 
 
@@ -55,6 +54,7 @@ async def handler_run_image(r: web.Request) -> web.Response:
     try:
         start = time.perf_counter()
         if not os.path.exists(file_path):
+            loop = asyncio.get_running_loop()
             await loop.run_in_executor(None, lambda: run_noise(file_path=file_path, **params))
 
         resp.data = dict(filename=filename, processes=NUM_PROCESSES)
@@ -122,6 +122,7 @@ async def handler_run_gif(r: web.Request) -> web.Response:
     try:
         start = time.perf_counter()
         if not os.path.exists(file_path):
+            loop = asyncio.get_running_loop()
             await loop.run_in_executor(None, lambda: run_gif(file_path=file_path, **params))
 
         resp.data = dict(filename=filename, processes=NUM_PROCESSES)

@@ -26,5 +26,4 @@ async def socket_cmd(cmd):
     return resp
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run())
+    asyncio.run(run())

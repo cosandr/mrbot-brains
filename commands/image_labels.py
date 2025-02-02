@@ -17,7 +17,6 @@ from ext.utils import bytes_from_url
 DATA_PATH = os.path.join(cfg.DATA_PATH, "IMG")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-loop = asyncio.get_event_loop()
 
 
 async def handler_list(r: web.Request) -> web.Response:
@@ -78,6 +77,7 @@ async def handler_run(r: web.Request) -> web.Response:
 
     try:
         start = time.perf_counter()
+        loop = asyncio.get_running_loop()
         results, labels = await loop.run_in_executor(None, lambda: run(**params))
         resp.data = dict(results=results.tolist(), labels=labels)
         resp.time = time.perf_counter() - start

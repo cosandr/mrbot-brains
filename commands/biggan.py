@@ -16,7 +16,6 @@ DATA_PATH = os.path.join(cfg.DATA_PATH, "biggan")
 CACHED_GAN: BigGAN = None
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-loop = asyncio.get_event_loop()
 
 
 async def handler_categories(r: web.Request) -> web.Response:
@@ -125,6 +124,7 @@ async def handler_run(r: web.Request) -> web.Response:
     try:
         start = time.perf_counter()
         if not os.path.exists(file_path):
+            loop = asyncio.get_running_loop()
             if not CACHED_GAN or gan_size != CACHED_GAN.biggan_size:
                 await loop.run_in_executor(None, lambda: load_biggan(gan_size))
             if what == 'hell':
